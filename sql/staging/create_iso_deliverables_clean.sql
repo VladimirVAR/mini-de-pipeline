@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS staging.iso_deliverables_clean (
+    id BIGINT,
+    deliverable_type TEXT,
+    supplement_type TEXT,
+    reference TEXT,
+    title_en TEXT,
+    title_fr TEXT,
+    publication_date DATE,
+    edition TEXT,
+    ics_code TEXT,
+    owner_committee TEXT,
+    current_stage TEXT,
+    replaces TEXT,
+    replaced_by TEXT,
+    languages_raw TEXT,
+    pages_en INTEGER,
+    scope_en TEXT,
+    source_file TEXT,
+    ingested_at TIMESTAMP
+);

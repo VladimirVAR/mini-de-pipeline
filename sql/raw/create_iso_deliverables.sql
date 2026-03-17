@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS raw.iso_deliverables (
+    id TEXT,
+    deliverable_type TEXT,
+    supplement_type TEXT,
+    reference TEXT,
+    title_en TEXT,
+    title_fr TEXT,
+    publication_date TEXT,
+    edition TEXT,
+    ics_code TEXT,
+    owner_committee TEXT,
+    current_stage TEXT,
+    replaces TEXT,
+    replaced_by TEXT,
+    languages TEXT,
+    pages_en TEXT,
+    scope_en TEXT,
+    source_file TEXT,
+    ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
