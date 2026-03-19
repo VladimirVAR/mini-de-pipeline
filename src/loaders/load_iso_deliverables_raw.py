@@ -64,6 +64,28 @@ INSERT_COLUMNS = [
     "source_file",
 ]
 
+NULL_LIKE_STRINGS = {"nan", "none", "null", "n/a", "na"}
+
+def normalize_cell_value(value):
+    if value is None:
+        return None
+
+    if pd.isna(value):
+        return None
+
+    if isinstance(value, str):
+        stripped = value.strip()
+
+        if stripped == "":
+            return None
+
+        if stripped.lower() in NULL_LIKE_STRINGS:
+            return None
+
+        return value
+
+    return value
+
 
 def load_iso_deliverables_raw(load_method: str = "executemany") -> int:
     load_dotenv()
@@ -82,9 +104,15 @@ def load_iso_deliverables_raw(load_method: str = "executemany") -> int:
         )
 
     df = df.rename(columns=COLUMN_MAPPING)
+
+    df = df.apply(lambda col: col.map(normalize_cell_value))
+
+    # Force all pandas missing markers to real Python None
+    df = df.astype(object)
+    df = df.where(pd.notna(df), None)
+
     df["source_file"] = source_path.name
     df = df[INSERT_COLUMNS]
-    df = df.where(pd.notna(df), None)
 
     rows = [tuple(row) for row in df.itertuples(index=False, name=None)]
 

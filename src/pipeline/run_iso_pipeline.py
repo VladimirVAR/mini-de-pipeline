@@ -43,6 +43,7 @@ def reset_layers_for_full_refresh() -> None:
     }
 
     reset_sql = """
+        TRUNCATE TABLE warehouse.iso_deliverables_core;
         TRUNCATE TABLE staging.iso_deliverables_clean;
         TRUNCATE TABLE raw.iso_deliverables;
     """
@@ -58,9 +59,8 @@ def main() -> None:
     config = get_pipeline_config()
 
     project_root = Path(__file__).resolve().parents[2]
-    staging_sql_path = (
-        project_root / "sql" / "staging" / "load_iso_deliverables_clean.sql"
-    )
+    staging_sql_path = project_root / "sql" / "staging" / "load_iso_deliverables_clean.sql"
+    warehouse_sql_path = project_root / "sql" / "warehouse" / "load_iso_deliverables_core.sql"
 
     logger.info(
         "Pipeline started | mode=%s | method=%s",
@@ -69,7 +69,7 @@ def main() -> None:
     )
 
     if config.load_mode == "full_refresh":
-        logger.info("Full refresh mode detected: resetting raw and staging layers")
+        logger.info("Full refresh mode detected: resetting raw, staging, and warehouse layers")
         reset_layers_for_full_refresh()
         logger.info("Layer reset completed")
     elif config.load_mode == "append":
@@ -84,6 +84,10 @@ def main() -> None:
     logger.info("Starting staging load")
     run_sql_file(staging_sql_path)
     logger.info("Staging load completed")
+
+    logger.info("Starting warehouse load")
+    run_sql_file(warehouse_sql_path)
+    logger.info("Warehouse load completed")
 
     logger.info("Starting validation")
     validation_results = validate_iso_deliverables()
