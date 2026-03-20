@@ -67,6 +67,12 @@ INSERT_COLUMNS = [
 NULL_LIKE_STRINGS = {"nan", "none", "null", "n/a", "na"}
 
 def normalize_cell_value(value):
+    """
+    Normalize a single source value before loading to raw.
+
+    Converts null-like values and empty strings to Python None
+    so they can be stored as SQL NULL in PostgreSQL.
+    """
     if value is None:
         return None
 
@@ -88,6 +94,23 @@ def normalize_cell_value(value):
 
 
 def load_iso_deliverables_raw(load_method: str = "executemany") -> int:
+    """
+    Load the ISO deliverables source file into raw.iso_deliverables.
+
+    Steps:
+    - read the CSV source file
+    - validate the expected source schema
+    - normalize column names
+    - normalize null-like values
+    - insert rows into the raw layer
+
+    Args:
+        load_method: Load strategy to use. Currently supports
+            "executemany". "copy" is reserved for future implementation.
+
+    Returns:
+        int: Number of rows loaded into raw.iso_deliverables.
+    """
     load_dotenv()
 
     source_path = Path("data/landing/iso_deliverables_metadata.csv")
@@ -179,6 +202,9 @@ def load_iso_deliverables_raw(load_method: str = "executemany") -> int:
 
 
 def main() -> None:
+    """
+    Run the raw loader as a standalone script entry point.
+    """
     loaded_rows = load_iso_deliverables_raw(load_method="executemany")
     print(f"Loaded {loaded_rows} rows into raw.iso_deliverables")
 

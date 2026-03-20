@@ -5,6 +5,20 @@ from psycopg import connect
 
 
 def validate_iso_deliverables() -> dict[str, int]:
+    """
+    Validate consistency across raw, staging, and warehouse layers.
+
+    The validation checks confirm that:
+    - row counts remain consistent across layers
+    - invalid raw values are converted to NULL in staging as expected
+    - warehouse null/flag logic stays consistent with staging output
+
+    Returns:
+        dict[str, int]: Collected validation metrics for the current pipeline run.
+
+    Raises:
+        RuntimeError: If any validation rule fails.
+    """
     load_dotenv()
 
     conn_params = {

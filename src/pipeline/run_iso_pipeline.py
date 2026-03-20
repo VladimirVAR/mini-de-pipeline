@@ -14,6 +14,12 @@ logger = get_logger(__name__)
 
 
 def run_sql_file(sql_file_path: Path) -> None:
+    """
+    Execute a SQL file against the configured PostgreSQL database.
+
+    Args:
+        sql_file_path: Path to the SQL file that should be executed.
+    """
     load_dotenv()
 
     conn_params = {
@@ -32,6 +38,12 @@ def run_sql_file(sql_file_path: Path) -> None:
 
 
 def reset_layers_for_full_refresh() -> None:
+    """
+    Reset pipeline target layers for a full refresh run.
+
+    Truncates warehouse, staging, and raw tables in dependency-safe order
+    so the pipeline can be rebuilt from scratch.
+    """
     load_dotenv()
 
     conn_params = {
@@ -54,6 +66,18 @@ def reset_layers_for_full_refresh() -> None:
 
 
 def main() -> None:
+    """
+    Run the full ISO pipeline workflow.
+
+    Pipeline steps:
+    - load pipeline configuration
+    - reset layers in full refresh mode
+    - load source data into raw
+    - build staging layer
+    - build warehouse layer
+    - run validation checks
+    - write pipeline status logs
+    """
     setup_logging()
 
     config = get_pipeline_config()
