@@ -24,6 +24,10 @@ def validate_iso_deliverables() -> dict[str, int]:
             SELECT COUNT(*)
             FROM staging.iso_deliverables_clean
         """,
+        "warehouse_row_count": """
+            SELECT COUNT(*)
+            FROM warehouse.iso_deliverables_core
+        """,
         "invalid_id_count": """
             SELECT COUNT(*)
             FROM raw.iso_deliverables
@@ -60,6 +64,21 @@ def validate_iso_deliverables() -> dict[str, int]:
             FROM staging.iso_deliverables_clean
             WHERE pages_en IS NULL
         """,
+        "staging_null_title_fr_count": """
+            SELECT COUNT(*)
+            FROM staging.iso_deliverables_clean
+            WHERE title_fr IS NULL
+        """,
+        "warehouse_null_title_fr_count": """
+            SELECT COUNT(*)
+            FROM warehouse.iso_deliverables_core
+            WHERE title_fr IS NULL
+        """,
+        "warehouse_false_has_title_fr_count": """
+            SELECT COUNT(*)
+            FROM warehouse.iso_deliverables_core
+            WHERE has_title_fr = false
+        """,
     }
 
     results: dict[str, int] = {}
@@ -74,6 +93,12 @@ def validate_iso_deliverables() -> dict[str, int]:
         raise RuntimeError(
             "Validation failed: raw_row_count does not match staging_row_count "
             f"({results['raw_row_count']} != {results['staging_row_count']})"
+        )
+
+    if results["staging_row_count"] != results["warehouse_row_count"]:
+        raise RuntimeError(
+            "Validation failed: staging_row_count does not match warehouse_row_count "
+            f"({results['staging_row_count']} != {results['warehouse_row_count']})"
         )
 
     if results["invalid_id_count"] != results["staging_null_id_count"]:
@@ -96,9 +121,28 @@ def validate_iso_deliverables() -> dict[str, int]:
     if results["invalid_pages_en_count"] != results["staging_null_pages_en_count"]:
         raise RuntimeError(
             "Validation failed: invalid_pages_en_count does not match "
-            f"staging_null_pages_en_count "
+            "staging_null_pages_en_count "
             f"({results['invalid_pages_en_count']} != "
             f"{results['staging_null_pages_en_count']})"
+        )
+
+    if results["staging_null_title_fr_count"] != results["warehouse_null_title_fr_count"]:
+        raise RuntimeError(
+            "Validation failed: staging_null_title_fr_count does not match "
+            "warehouse_null_title_fr_count "
+            f"({results['staging_null_title_fr_count']} != "
+            f"{results['warehouse_null_title_fr_count']})"
+        )
+
+    if (
+        results["warehouse_null_title_fr_count"]
+        != results["warehouse_false_has_title_fr_count"]
+    ):
+        raise RuntimeError(
+            "Validation failed: warehouse_null_title_fr_count does not match "
+            "warehouse_false_has_title_fr_count "
+            f"({results['warehouse_null_title_fr_count']} != "
+            f"{results['warehouse_false_has_title_fr_count']})"
         )
 
     return results

@@ -92,9 +92,10 @@ def main() -> None:
     logger.info("Starting validation")
     validation_results = validate_iso_deliverables()
     logger.info(
-        "Validation passed | raw_rows=%s | staging_rows=%s",
+        "Validation passed | raw_rows=%s | staging_rows=%s | warehouse_rows=%s",
         validation_results["raw_row_count"],
         validation_results["staging_row_count"],
+        validation_results["warehouse_row_count"],
     )
 
     logger.info("Pipeline finished successfully")
