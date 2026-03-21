@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 import os
 
@@ -10,27 +12,11 @@ SUPPORTED_LOAD_METHODS = {"executemany", "copy"}
 
 @dataclass(frozen=True)
 class PipelineConfig:
-    """
-    Immutable pipeline runtime configuration.
-
-    Attributes:
-        load_mode: Pipeline load mode, such as full_refresh or append.
-        load_method: Raw load method, such as executemany or copy.
-    """
     load_mode: str
     load_method: str
 
 
 def get_pipeline_config() -> PipelineConfig:
-    """
-    Load and validate pipeline runtime configuration from environment variables.
-
-    Returns:
-        PipelineConfig: Validated pipeline configuration object.
-
-    Raises:
-        ValueError: If load_mode or load_method is not supported.
-    """
     load_dotenv()
 
     load_mode = os.getenv("PIPELINE_LOAD_MODE", "full_refresh").strip().lower()
@@ -49,3 +35,15 @@ def get_pipeline_config() -> PipelineConfig:
         )
 
     return PipelineConfig(load_mode=load_mode, load_method=load_method)
+
+
+def get_connection_params() -> dict[str, str]:
+    load_dotenv()
+
+    return {
+        "host": os.getenv("POSTGRES_HOST", "localhost"),
+        "port": os.getenv("POSTGRES_PORT", "5433"),
+        "dbname": os.getenv("POSTGRES_DB", ""),
+        "user": os.getenv("POSTGRES_USER", ""),
+        "password": os.getenv("POSTGRES_PASSWORD", ""),
+    }

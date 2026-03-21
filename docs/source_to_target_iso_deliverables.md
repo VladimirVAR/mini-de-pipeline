@@ -1,103 +1,135 @@
-# ISO Deliverables: Source-to-Target Contract
+# ISO Deliverables: Source-to-Target Contract (V2)
 
 ## 1. Source
 
 - Source name: `iso_deliverables_metadata`
 - Source format: `CSV`
 - Source file: `data/landing/iso_deliverables_metadata.csv`
-- Grain: `1 row = 1 deliverable`
-- Observed row count: `80357`
-- Observed column count: `16`
+- Source grain: `1 row = 1 deliverable record from the source snapshot`
+- Observed columns: `16`
 
-### Source columns
+## 2. Runtime Semantics
 
-- `id`
-- `deliverableType`
-- `supplementType`
-- `reference`
-- `title.en`
-- `title.fr`
-- `publicationDate`
-- `edition`
-- `icsCode`
-- `ownerCommittee`
-- `currentStage`
-- `replaces`
-- `replacedBy`
-- `languages`
-- `pages.en`
-- `scope.en`
+### Load method
+Controls **how raw rows are written**:
+- `executemany`
+- `copy`
 
-## 2. Raw Target
+### Load mode
+Controls **how the pipeline behaves semantically**:
+- `full_refresh` = truncate all target layers, then build one fresh batch
+- `append` = create a new batch and preserve prior batches
 
-- Target schema: `raw`
-- Target table: `iso_deliverables`
-- Load strategy: `append`
-- Goal: preserve the source data as close to the original as possible
+## 3. Raw Layer
 
-### Raw column mapping
+### 3.1 `raw.load_batches`
+Grain:
+- `1 row = 1 pipeline load batch`
 
-- `id` -> `id`
-- `deliverableType` -> `deliverable_type`
-- `supplementType` -> `supplement_type`
-- `reference` -> `reference`
-- `title.en` -> `title_en`
-- `title.fr` -> `title_fr`
-- `publicationDate` -> `publication_date`
-- `edition` -> `edition`
-- `icsCode` -> `ics_code`
-- `ownerCommittee` -> `owner_committee`
-- `currentStage` -> `current_stage`
-- `replaces` -> `replaces`
-- `replacedBy` -> `replaced_by`
-- `languages` -> `languages`
-- `pages.en` -> `pages_en`
-- `scope.en` -> `scope_en`
-
-### Raw technical columns
-
+Key fields:
+- `load_batch_id`
+- `source_name`
 - `source_file`
-- `ingested_at`
+- `file_hash_sha256`
+- `load_mode`
+- `load_method`
+- `status`
+- `loaded_row_count`
+- `started_at`
+- `finished_at`
 
-## 3. Staging Target
+### 3.2 `raw.iso_deliverables`
+Grain:
+- `1 row = 1 raw source row inside 1 load batch`
 
-- Target schema: `staging`
-- Target table: `iso_deliverables_clean`
-- Goal: create a cleaned and normalized table with basic type casting and safe transformations
+Primary identifiers:
+- `raw_row_id`
+- `load_batch_id`
+- `source_row_num`
 
-### Proposed staging columns
+Goal:
+- preserve source values as close to the original as practical
+- keep batch traceability
+- support append/snapshot history
 
-- `id BIGINT`
-- `deliverable_type TEXT`
-- `supplement_type TEXT`
-- `reference TEXT`
-- `title_en TEXT`
-- `title_fr TEXT`
+## 4. Staging Layer
+
+### 4.1 `staging.iso_deliverables_clean`
+Grain:
+- `1 row = 1 cleaned source row inside 1 load batch`
+
+Purpose:
+- safe type casting
+- basic normalization
+- lightweight business-safe derived fields
+
+Important derived fields:
+- `deliverable_id BIGINT`
 - `publication_date DATE`
-- `edition TEXT`
-- `ics_code TEXT`
-- `owner_committee TEXT`
-- `current_stage TEXT`
-- `replaces TEXT`
-- `replaced_by TEXT`
-- `languages_raw TEXT`
-- `pages_en INTEGER`
-- `scope_en TEXT`
-- `source_file TEXT`
-- `ingested_at TIMESTAMP`
+- `publication_year INTEGER`
+- `edition INTEGER`
+- `current_stage_code TEXT`
+- `stage_family_code TEXT`
+- `stage_subcode TEXT`
+- `is_published BOOLEAN`
+- `is_withdrawn BOOLEAN`
+- `has_title_en BOOLEAN`
+- `has_title_fr BOOLEAN`
+- `scope_en_text TEXT`
 
-## 4. Basic Transformation Rules
+### 4.2 `staging.iso_deliverable_languages`
+Grain:
+- `1 row = 1 cleaned source row + 1 language`
 
-- Normalize column names to `snake_case`
-- Do not apply heavy cleansing logic in the `raw` layer
-- Apply basic and safe transformations in the `staging` layer
-- Cast `publication_date` to `DATE`; if parsing fails, store `NULL`
-- Cast `pages_en` to `INTEGER`; if parsing fails, store `NULL`
-- Keep `languages` as raw text for now
-- Preserve `source_file` and `ingested_at` for traceability
+### 4.3 `staging.iso_deliverable_ics`
+Grain:
+- `1 row = 1 cleaned source row + 1 ICS code`
 
-## 5. Notes
+### 4.4 `staging.iso_deliverable_relations`
+Grain:
+- `1 row = 1 cleaned source row + 1 relation`
 
-- The `raw` layer is intended for traceable ingestion, not for business-ready analytics
-- The `staging` layer is the first controlled transformation step
-- Additional business logic and downstream modeling will be implemented later in the `warehouse` layer
+Relation types:
+- `replaces`
+- `replaced_by`
+
+## 5. Warehouse Layer
+
+### 5.1 `warehouse.fact_deliverable_snapshot`
+Grain:
+- `1 row = 1 cleaned source row in 1 warehouse snapshot batch`
+
+Purpose:
+- curated snapshot fact table
+- preserve batch history
+- support current-state view and future trend analysis
+
+### 5.2 Bridge tables
+- `warehouse.bridge_deliverable_snapshot_languages`
+- `warehouse.bridge_deliverable_snapshot_ics`
+- `warehouse.factless_deliverable_relation_snapshot`
+
+### 5.3 Current-state view
+- `warehouse.vw_deliverables_current`
+- returns rows from the latest `warehouse_loaded` batch
+
+## 6. Key Transformation Rules
+
+- keep raw source columns in `TEXT` form in the raw layer
+- normalize column names to `snake_case`
+- cast `id` to `BIGINT` only when the value is numeric
+- cast `publication_date` to `DATE` only when the value is a valid ISO date string
+- cast `edition` and `pages_en` to integer only when numeric
+- strip HTML tags from `scope_en` into `scope_en_text`
+- explode `languages`, `ics_code`, `replaces`, and `replaced_by` into child tables
+- preserve `source_file`, `load_batch_id`, and `source_row_num` for traceability
+
+## 7. Validation Contract
+
+Validation runs **per load batch** and checks:
+- raw → staging row count parity
+- staging → warehouse row count parity
+- staging child row counts = warehouse child row counts
+- no orphan rows in staging child tables
+- malformed raw numeric/date fields are nullified as expected in staging
+- `has_title_fr = false` is consistent with `title_fr IS NULL` in warehouse

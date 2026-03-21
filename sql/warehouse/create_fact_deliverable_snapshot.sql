@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS staging.iso_deliverables_clean (
-    raw_row_id                   BIGINT PRIMARY KEY REFERENCES raw.iso_deliverables(raw_row_id) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS warehouse.fact_deliverable_snapshot (
+    raw_row_id                   BIGINT PRIMARY KEY REFERENCES staging.iso_deliverables_clean(raw_row_id) ON DELETE CASCADE,
     load_batch_id                BIGINT      NOT NULL REFERENCES raw.load_batches(load_batch_id) ON DELETE CASCADE,
     source_row_num               INTEGER     NOT NULL,
     deliverable_id               BIGINT,
@@ -20,20 +20,17 @@ CREATE TABLE IF NOT EXISTS staging.iso_deliverables_clean (
     is_withdrawn                 BOOLEAN     NOT NULL,
     has_title_en                 BOOLEAN     NOT NULL,
     has_title_fr                 BOOLEAN     NOT NULL,
-    ics_code_raw                 TEXT,
-    replaces_raw                 TEXT,
-    replaced_by_raw              TEXT,
-    languages_raw                TEXT,
     pages_en                     INTEGER,
     scope_en_html                TEXT,
     scope_en_text                TEXT,
     source_file                  TEXT        NOT NULL,
     ingested_at                  TIMESTAMPTZ NOT NULL,
-    CONSTRAINT uq_stg_iso_deliverables_clean_batch_row UNIQUE (load_batch_id, source_row_num)
+    warehouse_loaded_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_wh_fact_deliverable_snapshot_batch_row UNIQUE (load_batch_id, source_row_num)
 );
 
-CREATE INDEX IF NOT EXISTS idx_stg_iso_deliverables_clean_batch
-    ON staging.iso_deliverables_clean (load_batch_id);
+CREATE INDEX IF NOT EXISTS idx_wh_fact_deliverable_snapshot_batch
+    ON warehouse.fact_deliverable_snapshot (load_batch_id);
 
-CREATE INDEX IF NOT EXISTS idx_stg_iso_deliverables_clean_batch_deliverable
-    ON staging.iso_deliverables_clean (load_batch_id, deliverable_id);
+CREATE INDEX IF NOT EXISTS idx_wh_fact_deliverable_snapshot_batch_deliverable
+    ON warehouse.fact_deliverable_snapshot (load_batch_id, deliverable_id);
