@@ -1,0 +1,163 @@
+version: 2
+
+models:
+  - name: stg_iso_deliverables_clean
+    description: "Cleaned staging model for ISO deliverables loaded from raw source."
+    columns:
+      - name: raw_row_id
+        description: "Technical row identifier from raw layer."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: load_batch_id
+        description: "Batch identifier from the ingestion run."
+        data_tests:
+          - not_null
+
+      - name: source_row_num
+        description: "Original row number from source file."
+        data_tests:
+          - not_null
+
+      - name: deliverable_type
+        description: "Normalized deliverable type."
+      - name: supplement_type
+        description: "Normalized supplement type."
+      - name: reference
+        description: "Normalized deliverable reference."
+      - name: title_en
+        description: "English title after cleanup."
+      - name: title_fr
+        description: "French title after cleanup."
+      - name: publication_date
+        description: "Parsed publication date."
+      - name: publication_year
+        description: "Year extracted from publication date."
+      - name: edition
+        description: "Parsed edition number."
+      - name: owner_committee
+        description: "Normalized owner committee."
+      - name: current_stage_raw
+        description: "Original current stage text."
+      - name: current_stage_code
+        description: "Digits-only current stage code."
+      - name: stage_family_code
+        description: "First two digits of stage code."
+      - name: stage_subcode
+        description: "Last two digits of stage code."
+      - name: is_published
+        description: "True if stage code indicates published state."
+      - name: is_withdrawn
+        description: "True if stage family indicates withdrawn state."
+      - name: has_title_en
+        description: "Flag showing whether English title exists."
+      - name: has_title_fr
+        description: "Flag showing whether French title exists."
+      - name: ics_code_raw
+        description: "Raw ICS code list from source."
+      - name: replaces_raw
+        description: "Raw list of replaced deliverables."
+      - name: replaced_by_raw
+        description: "Raw list of replacing deliverables."
+      - name: languages_raw
+        description: "Raw list of languages."
+      - name: pages_en
+        description: "Parsed English page count."
+      - name: scope_en_html
+        description: "Original scope field with HTML."
+      - name: scope_en_text
+        description: "Scope field cleaned to plain text."
+      - name: source_file
+        description: "Source file name."
+      - name: ingested_at
+        description: "Timestamp from raw ingestion."
+
+  - name: stg_iso_deliverable_languages
+    description: "One row per deliverable-language code."
+    columns:
+      - name: raw_row_id
+        description: "Technical row identifier from raw layer."
+        data_tests:
+          - not_null
+
+      - name: load_batch_id
+        description: "Batch identifier from ingestion run."
+        data_tests:
+          - not_null
+
+      - name: deliverable_id
+        description: "Deliverable identifier from cleaned staging model."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_iso_deliverables_clean')
+                field: deliverable_id
+
+      - name: language_code
+        description: "Normalized language code split from languages_raw."
+        data_tests:
+          - not_null
+
+  - name: stg_iso_deliverable_ics
+    description: "One row per deliverable-ICS code."
+    columns:
+      - name: raw_row_id
+        description: "Technical row identifier from raw layer."
+        data_tests:
+          - not_null
+
+      - name: load_batch_id
+        description: "Batch identifier from ingestion run."
+        data_tests:
+          - not_null
+
+      - name: deliverable_id
+        description: "Deliverable identifier from cleaned staging model."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_iso_deliverables_clean')
+                field: deliverable_id
+
+      - name: ics_code
+        description: "Normalized ICS code split from ics_code_raw."
+        data_tests:
+          - not_null
+
+  - name: stg_iso_deliverable_relations
+    description: "One row per deliverable-to-deliverable relation."
+    columns:
+      - name: raw_row_id
+        description: "Technical row identifier from raw layer."
+        data_tests:
+          - not_null
+
+      - name: load_batch_id
+        description: "Batch identifier from ingestion run."
+        data_tests:
+          - not_null
+
+      - name: deliverable_id
+        description: "Source deliverable identifier."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_iso_deliverables_clean')
+                field: deliverable_id
+
+      - name: related_deliverable_id
+        description: "Related deliverable identifier extracted from replaces/replaced_by."
+        data_tests:
+          - not_null
+
+      - name: relation_type
+        description: "Direction/type of relation between deliverables."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['replaces', 'replaced_by']

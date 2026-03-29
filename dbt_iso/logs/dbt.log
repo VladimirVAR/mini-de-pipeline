@@ -1,0 +1,127 @@
+[0m11:52:54.522341 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C9D3EA82F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C9CF897610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C9D5D0FC50>]}
+
+
+============================== 11:52:54.526547 | d38b2faa-5410-42a8-9e0d-2e5f73ed1685 ==============================
+[0m11:52:54.526547 [info ] [MainThread]: Running with dbt=1.11.7
+[0m11:52:54.527185 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': 'C:\\Users\\vovav\\.dbt', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'invocation_command': 'dbt init', 'use_colors': 'True', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'log_path': 'logs'}
+[0m11:53:16.661296 [debug] [MainThread]: Starter project path: C:\Users\vovav\AppData\Local\Programs\Python\Python313\Lib\site-packages\dbt\include\starter_project
+[0m11:53:16.695167 [info ] [MainThread]: 
+Your new dbt project "mini_de_pipeline" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m11:53:16.695769 [info ] [MainThread]: Setting up your profile.
+[0m11:54:29.868375 [info ] [MainThread]: Profile mini_de_pipeline written to C:\Users\vovav\.dbt\profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m11:54:29.869489 [debug] [MainThread]: Command `dbt init` succeeded at 11:54:29.869385 after 95.48 seconds
+[0m11:54:29.869738 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C9D5E695B0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C9D5DA69F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002C9D4BDDD00>]}
+[0m11:54:29.869977 [debug] [MainThread]: Flushing usage events
+[0m11:54:30.346028 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:54:44.666576 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019F25FBC2F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019F219B7610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019F27E1BC50>]}
+
+
+============================== 11:54:44.669701 | e36517e4-9eac-4970-be18-ac2794f8343c ==============================
+[0m11:54:44.669701 [info ] [MainThread]: Running with dbt=1.11.7
+[0m11:54:44.670300 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': 'C:\\Users\\vovav\\.dbt', 'invocation_command': 'dbt debug', 'use_colors': 'True', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'log_path': 'logs'}
+[0m11:54:44.683523 [info ] [MainThread]: dbt version: 1.11.7
+[0m11:54:44.683948 [info ] [MainThread]: python version: 3.13.7
+[0m11:54:44.684332 [info ] [MainThread]: python path: C:\Users\vovav\AppData\Local\Programs\Python\Python313\python.exe
+[0m11:54:44.684654 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m11:54:44.723595 [info ] [MainThread]: Using profiles dir at C:\Users\vovav\.dbt
+[0m11:54:44.724120 [info ] [MainThread]: Using profiles.yml file at C:\Users\vovav\.dbt\profiles.yml
+[0m11:54:44.724561 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\vovav\Desktop\mini-de-pipeline\dbt_iso\dbt_project.yml
+[0m11:54:44.725122 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m11:54:44.725888 [debug] [MainThread]: Command `dbt debug` failed at 11:54:44.725773 after 0.20 seconds
+[0m11:54:44.726186 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019F27F16B10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019F280F3BF0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000019F27F39590>]}
+[0m11:54:44.726482 [debug] [MainThread]: Flushing usage events
+[0m11:54:45.188375 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m12:00:17.821105 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AA9A0382F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AA95A27610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AA9BE9FC50>]}
+
+
+============================== 12:00:17.824207 | 3271a96f-8539-41d7-8a0a-fc857a2e53e6 ==============================
+[0m12:00:17.824207 [info ] [MainThread]: Running with dbt=1.11.7
+[0m12:00:17.824659 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'profiles_dir': 'C:\\Users\\vovav\\.dbt', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'indirect_selection': 'eager', 'invocation_command': 'dbt debug', 'use_colors': 'True', 'use_experimental_parser': 'False', 'log_path': 'logs'}
+[0m12:00:17.835312 [info ] [MainThread]: dbt version: 1.11.7
+[0m12:00:17.835763 [info ] [MainThread]: python version: 3.13.7
+[0m12:00:17.836020 [info ] [MainThread]: python path: C:\Users\vovav\AppData\Local\Programs\Python\Python313\python.exe
+[0m12:00:17.836328 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m12:00:17.872366 [info ] [MainThread]: Using profiles dir at C:\Users\vovav\.dbt
+[0m12:00:17.872870 [info ] [MainThread]: Using profiles.yml file at C:\Users\vovav\.dbt\profiles.yml
+[0m12:00:17.873206 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\vovav\Desktop\mini-de-pipeline\dbt_iso\dbt_project.yml
+[0m12:00:17.873501 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m12:00:17.874042 [debug] [MainThread]: Command `dbt debug` failed at 12:00:17.873957 after 0.16 seconds
+[0m12:00:17.874278 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AA9BF96B10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AA9C077BF0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AA9BFBD590>]}
+[0m12:00:17.874572 [debug] [MainThread]: Flushing usage events
+[0m12:00:18.347258 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m12:10:52.293350 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000216308DC2F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002162C2A7610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002163273BC50>]}
+
+
+============================== 12:10:52.296305 | 89eb4aaf-2afd-44bc-9627-cf514ceb0505 ==============================
+[0m12:10:52.296305 [info ] [MainThread]: Running with dbt=1.11.7
+[0m12:10:52.296782 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'version_check': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': 'C:\\Users\\vovav\\.dbt', 'indirect_selection': 'eager', 'use_colors': 'True', 'invocation_command': 'dbt debug --profile mini_de_pipeline --target dev --profiles-dir C:\\Users\\vovav\\.dbt', 'use_experimental_parser': 'False', 'log_path': 'logs'}
+[0m12:10:52.308532 [info ] [MainThread]: dbt version: 1.11.7
+[0m12:10:52.308985 [info ] [MainThread]: python version: 3.13.7
+[0m12:10:52.309303 [info ] [MainThread]: python path: C:\Users\vovav\AppData\Local\Programs\Python\Python313\python.exe
+[0m12:10:52.309734 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m12:10:52.348655 [info ] [MainThread]: Using profiles dir at C:\Users\vovav\.dbt
+[0m12:10:52.349230 [info ] [MainThread]: Using profiles.yml file at C:\Users\vovav\.dbt\profiles.yml
+[0m12:10:52.349546 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\vovav\Desktop\mini-de-pipeline\dbt_iso\dbt_project.yml
+[0m12:10:52.350501 [info ] [MainThread]: adapter type: postgres
+[0m12:10:52.350871 [info ] [MainThread]: adapter version: 1.10.0
+[0m12:10:52.351202 [info ] [MainThread]: Configuration:
+[0m12:10:52.351631 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m12:10:52.352154 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m12:10:52.352588 [info ] [MainThread]: Required dependencies:
+[0m12:10:52.352914 [debug] [MainThread]: Executing "git --help"
+[0m12:10:52.387191 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Set `HEAD` or the index to a known state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m12:10:52.387591 [debug] [MainThread]: STDERR: "b''"
+[0m12:10:52.387880 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m12:10:52.388399 [info ] [MainThread]: Connection:
+[0m12:10:52.388866 [info ] [MainThread]:   host: localhost
+[0m12:10:52.389249 [info ] [MainThread]:   port: 5433
+[0m12:10:52.389656 [info ] [MainThread]:   user: de_user
+[0m12:10:52.390020 [info ] [MainThread]:   database: de_project
+[0m12:10:52.390467 [info ] [MainThread]:   schema: dbt_iso
+[0m12:10:52.390894 [info ] [MainThread]:   connect_timeout: 10
+[0m12:10:52.391443 [info ] [MainThread]:   role: None
+[0m12:10:52.391944 [info ] [MainThread]:   search_path: None
+[0m12:10:52.392425 [info ] [MainThread]:   keepalives_idle: 0
+[0m12:10:52.392917 [info ] [MainThread]:   sslmode: None
+[0m12:10:52.393420 [info ] [MainThread]:   sslcert: None
+[0m12:10:52.393768 [info ] [MainThread]:   sslkey: None
+[0m12:10:52.394241 [info ] [MainThread]:   sslrootcert: None
+[0m12:10:52.394706 [info ] [MainThread]:   application_name: dbt
+[0m12:10:52.395199 [info ] [MainThread]:   retries: 1
+[0m12:10:52.395872 [info ] [MainThread]: Registered adapter: postgres=1.10.0
+[0m12:10:52.756499 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m12:10:54.904775 [debug] [MainThread]: Using postgres connection "debug"
+[0m12:10:54.905075 [debug] [MainThread]: On debug: select 1 as id
+[0m12:10:54.905258 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m12:10:54.957276 [debug] [MainThread]: SQL status: SELECT 1 in 0.052 seconds
+[0m12:10:54.957927 [debug] [MainThread]: On debug: Close
+[0m12:10:54.958207 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m12:10:54.958683 [info ] [MainThread]: [31m1 check failed:[0m
+[0m12:10:54.959057 [info ] [MainThread]: Project loading failed for the following reason:
+ project path <C:\Users\vovav\Desktop\mini-de-pipeline\dbt_iso\dbt_project.yml> not found
+
+[0m12:10:54.959835 [debug] [MainThread]: Command `dbt debug` failed at 12:10:54.959750 after 2.80 seconds
+[0m12:10:54.960038 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m12:10:54.960231 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021632833A80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021632AD16D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021632855F20>]}
+[0m12:10:54.960447 [debug] [MainThread]: Flushing usage events
+[0m12:10:55.437753 [debug] [MainThread]: An error was encountered while trying to flush usage events
