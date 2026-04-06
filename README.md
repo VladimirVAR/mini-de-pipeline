@@ -1,6 +1,6 @@
 # Mini DE Pipeline
 
-A modular batch data pipeline project built with Python, PostgreSQL, Docker, and SQL.
+A modular batch data pipeline project built with Python, PostgreSQL, Docker, SQL, and dbt.
 
 ## Project Goal
 
@@ -10,11 +10,12 @@ The current version focuses on:
 
 - ingesting ISO Open Data metadata from a CSV file,
 - preserving source loads as identifiable batches,
-- transforming raw rows into typed staging tables,
-- exploding multi-valued fields into child tables,
+- transforming raw rows into typed staging models,
+- exploding multi-valued fields into child models,
 - building a warehouse snapshot layer,
 - exposing a current-state view over the latest snapshot,
-- validating consistency across pipeline layers.
+- validating consistency across pipeline layers,
+- introducing a dbt-based transformation layer for staging.
 
 ---
 
@@ -26,6 +27,9 @@ The current implementation supports:
 - **input dataset**: ISO Open Data (`iso_deliverables_metadata`)
 - **batch metadata**: `raw.load_batches`
 - **raw layer**: `raw.iso_deliverables`
+
+### Legacy pipeline objects
+
 - **staging main table**: `staging.iso_deliverables_clean`
 - **staging child tables**:
   - `staging.iso_deliverable_languages`
@@ -37,9 +41,31 @@ The current implementation supports:
   - `warehouse.bridge_deliverable_snapshot_ics`
   - `warehouse.factless_deliverable_relation_snapshot`
 - **current-state view**: `warehouse.vw_deliverables_current`
-- **validation**: batch-level raw / staging / warehouse checks
-- **execution**: Python pipeline runner
+
+### dbt layer (current migration state)
+
+The project now includes a dedicated dbt subproject that reads from the existing `raw` layer and builds a dbt-managed staging layer in a separate schema.
+
+Current dbt models:
+
+- `dbt_iso.stg_iso_deliverables_clean`
+- `dbt_iso.stg_iso_deliverable_languages`
+- `dbt_iso.stg_iso_deliverable_ics`
+- `dbt_iso.stg_iso_deliverable_relations`
+
+Current dbt coverage:
+
+- source definition for `raw.iso_deliverables`
+- staging models built as dbt views
+- column-level data tests
+- generated dbt docs for the staging graph
+
+### Execution / validation
+
+- **legacy execution**: Python pipeline runner
+- **dbt execution**: `dbt run`, `dbt test`, `dbt docs generate`
 - **database**: PostgreSQL in Docker
+- **validation**: legacy batch-level checks + dbt staging tests
 
 ---
 
@@ -51,11 +77,14 @@ The current implementation supports:
 CSV source
   -> raw load batch metadata
   -> raw landing table
-  -> staging typed / cleaned main table
-  -> staging exploded child tables
-  -> warehouse snapshot tables
-  -> current-state view
-  -> validation
+  -> legacy SQL/Python staging + warehouse pipeline
+  -> current-state analytical view
+
+CSV source
+  -> raw landing table
+  -> dbt source(raw.iso_deliverables)
+  -> dbt staging models in schema dbt_iso
+  -> dbt tests + docs
 ```
 
 ### Data Layers
@@ -73,6 +102,7 @@ CSV source
 - derives helper fields such as publication year and title flags
 - preserves row-level traceability
 - explodes multi-valued fields such as languages, ICS codes, and deliverable relationships
+- is now implemented both in the legacy SQL pipeline and in the new dbt staging layer
 
 #### warehouse
 
@@ -80,6 +110,7 @@ CSV source
 - supports historical batch-level analysis
 - exposes `warehouse.vw_deliverables_current` as the latest snapshot view
 - supports downstream analytical queries on both current and historical data
+- is still driven by the legacy SQL/Python pipeline in the current version
 
 ---
 
@@ -151,19 +182,35 @@ mini-de-pipeline/
 │       ├── load_bridge_deliverable_snapshot_ics.sql
 │       └── load_factless_deliverable_relation_snapshot.sql
 │
-└── src/
-    ├── __init__.py
-    ├── common/
-    │   ├── __init__.py
-    │   ├── logger.py
-    │   ├── pipeline_config.py
-    │   └── validation.py
-    ├── loaders/
-    │   ├── __init__.py
-    │   └── load_iso_deliverables_raw.py
-    └── pipeline/
-        ├── __init__.py
-        └── run_iso_pipeline.py
+├── src/
+│   ├── __init__.py
+│   ├── common/
+│   │   ├── __init__.py
+│   │   ├── logger.py
+│   │   ├── pipeline_config.py
+│   │   └── validation.py
+│   ├── loaders/
+│   │   ├── __init__.py
+│   │   └── load_iso_deliverables_raw.py
+│   └── pipeline/
+│       ├── __init__.py
+│       └── run_iso_pipeline.py
+│
+└── dbt_iso/
+    └── mini_de_pipeline/
+        ├── dbt_project.yml
+        ├── models/
+        │   ├── sources.yml
+        │   └── staging/
+        │       ├── staging_properties.yml
+        │       ├── stg_iso_deliverables_clean.sql
+        │       ├── stg_iso_deliverable_languages.sql
+        │       ├── stg_iso_deliverable_ics.sql
+        │       └── stg_iso_deliverable_relations.sql
+        ├── macros/
+        ├── seeds/
+        ├── snapshots/
+        └── tests/
 ```
 
 ---
@@ -178,7 +225,7 @@ This file is not stored in Git and should be placed locally in the landing direc
 
 ---
 
-## Run the Pipeline
+## Run the Legacy Pipeline
 
 Run the pipeline from the project root:
 
@@ -198,6 +245,37 @@ POSTGRES_HOST=localhost
 PIPELINE_LOAD_MODE=full_refresh
 PIPELINE_LOAD_METHOD=executemany
 ```
+
+---
+
+## Run the dbt Staging Layer
+
+Change into the dbt project directory:
+
+```bash
+cd dbt_iso/mini_de_pipeline
+```
+
+Run the dbt staging models:
+
+```bash
+dbt run
+```
+
+Run the dbt staging tests:
+
+```bash
+dbt test
+```
+
+Generate local dbt docs:
+
+```bash
+dbt docs generate
+dbt docs serve
+```
+
+The current dbt target schema is expected to be separate from the raw and legacy staging schemas.
 
 ---
 
@@ -250,6 +328,7 @@ This document defines:
 - PostgreSQL
 - Docker
 - SQL
+- dbt Core
 - pandas
 - psycopg
 - python-dotenv
@@ -271,6 +350,20 @@ This project is designed to demonstrate practical data engineering fundamentals:
 - modular project structure ready for extension
 - build a snapshot-based warehouse model
 - expose a current-state analytical view
+- introduce dbt-based transformation, testing, and documentation workflows
+
+---
+
+## Current Roadmap
+
+The current migration status is:
+
+- raw ingestion: handled by Python
+- legacy staging: implemented in SQL / PostgreSQL
+- dbt staging: implemented and tested
+- warehouse dbt migration: planned next
+- Airflow orchestration: planned after dbt warehouse migration
+- additional source formats (for example JSONL / Parquet): planned future extension
 
 ---
 
