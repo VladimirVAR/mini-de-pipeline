@@ -1,0 +1,7 @@
+-r requirements.txt
+
+dbt-core==1.11.7
+dbt-postgres==1.10.0
+
+# Keep compatible with Airflow/OpenTelemetry in the local Airflow venv
+importlib-metadata==8.7.0
