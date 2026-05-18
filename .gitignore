@@ -4,3 +4,6 @@ __pycache__/
 .env
 data/landing/
 dbt_iso/logs/
+dbt_iso/mini_de_pipeline/target/
+dbt_iso/mini_de_pipeline/dbt_packages/
+dbt_iso/mini_de_pipeline/logs/
