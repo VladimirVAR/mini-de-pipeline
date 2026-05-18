@@ -223,6 +223,16 @@ The pipeline expects the following source file:
 
 This file is not stored in Git and should be placed locally in the landing directory.
 
+The dataset used in this project comes from ISO Open Data:
+
+- Dataset: [ISO Deliverables Metadata](https://www.iso.org/open-data.html#iso_deliverables_metadata)
+- Format used in this project: CSV
+- License: ODC Attribution License (ODC-By) v1.0
+
+To reproduce the pipeline locally, download the CSV version of the `iso_deliverables_metadata` dataset and place it at:
+
+`data/landing/iso_deliverables_metadata.csv`
+
 ---
 
 ## Run the Legacy Pipeline
